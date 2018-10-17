@@ -1,5 +1,6 @@
-// TODO. not working with DC node version or something
-// require('source-map-support').install();
+// require('source-map-support').install({
+//   environment: 'node'
+// });
 
 import logLevel from 'loglevel';
 import * as logLevelPrefix from 'loglevel-plugin-prefix';

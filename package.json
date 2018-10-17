@@ -11,6 +11,7 @@
     "start:dev": "npm run clean:dev && cross-env WEBPACK_ENV=development DC_ENV=dev DEV_SRV=true webpack-dev-server --config ./webpack/webpack.config.js --colors",
     "watch:dev": "npm run build:dev -- --watch",
     "watch:prod": "npm run build:prod -- --watch",
+    "build:all": "npm run build:dev && npm run build:prod",
     "build:dev": "cross-env WEBPACK_ENV=development webpack --config ./webpack/webpack.config.js --colors --mode=development",
     "build:prod": "cross-env WEBPACK_ENV=production webpack --config ./webpack/webpack.config.js --colors --mode=production",
     "clean": "rimraf ./dist",

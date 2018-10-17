@@ -5,6 +5,7 @@
  */
 
 import LoggerFactory from '../../util/LoggerFactory';
+const browser = require('webextension-polyfill');
 
 const logger = LoggerFactory.createLogger('background.js');
 logger.info('Background script loaded.');
