@@ -28,7 +28,7 @@ const createBaseConfig = () => {
       options: [customPublicPath, path.join(projectRootDir, 'src/extension/options/options.js')],
     },
     resolve: {
-      extensions: ['.js', '.jsx'],
+      extensions: ['.js', '.ts'],
     },
     output: {
       path: projectOutputDir,

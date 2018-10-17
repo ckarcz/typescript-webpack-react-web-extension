@@ -35,11 +35,11 @@ const createDevConfig = () => {
     module: {
       rules: [
         {
-          test: /\.js$/,
+          test: [/\.js$/, /\.ts$/],
           exclude: [
             /node_modules/
           ],
-          loader: 'babel-loader'
+          loader: 'ts-loader'
         },
         {
           test: /\.pug/,
