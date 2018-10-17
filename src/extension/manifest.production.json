@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+  "version": "1.0.0",
+  "name": "browser-extension",
+  "description": "Browser extension",
+  "browser_action": {
+    "default_title": "Extension",
+    "default_popup": "html/popup.html"
+  },
+  "background": {
+    "page": "html/background.html"
+  },
+  "options_ui": {
+    "page": "html/options.html",
+    "open_in_tab": false
+  },
+  "permissions": [
+  ],
+  "content_security_policy": "default-src 'self'; script-src 'self'; style-src * 'unsafe-inline'; img-src 'self' data:;"
+}

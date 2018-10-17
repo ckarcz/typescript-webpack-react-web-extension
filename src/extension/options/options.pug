@@ -1,0 +1,13 @@
+//- Extension options view
+//- https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/user_interface/Options_pages
+//- https://developer.chrome.com/extensions/options
+
+doctype html
+
+html
+  head
+    meta(charset='UTF-8')
+    title Extension Options
+  body
+    #root
+    script(src=(DEV_SRV ? `${DEV_SRV_URL}/js/options.bundle.js` : '../js/options.bundle.js'))
