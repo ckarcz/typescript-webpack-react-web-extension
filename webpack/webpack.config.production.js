@@ -39,13 +39,15 @@ const createProdConfig = () => {
           test: /\.css$/,
           exclude: /node_modules/,
           use: [
+            MiniCssExtractPlugin.loader,
             {
-              loader: MiniCssExtractPlugin.loader,
+              loader: 'css-loader',
               options: {
-                minimize: true
+                modules: true,
+                sourceMap: false,
+                localIdentName: '[hash:base64:5]'
               }
-            },
-            'css-loader'
+            }
           ]
         }
       ]

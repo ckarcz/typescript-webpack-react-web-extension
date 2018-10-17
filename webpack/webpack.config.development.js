@@ -64,10 +64,15 @@ const createDevConfig = () => {
           test: /\.css$/,
           exclude: /node_modules/,
           use: [
+            MiniCssExtractPlugin.loader,
             {
-              loader: MiniCssExtractPlugin.loader
-            },
-            'css-loader'
+              loader: 'css-loader',
+              options: {
+                modules: true,
+                sourceMap: true,
+                localIdentName: '[path][name]__[local]'
+              }
+            }
           ]
         }
       ]

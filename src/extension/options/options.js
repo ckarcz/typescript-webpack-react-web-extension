@@ -16,11 +16,12 @@ import createStore from '../../app/store/configureStore';
 const logger = LoggerFactory.createLogger('options.js');
 logger.info('Options script loaded.');
 
-browser.storage.local.get('options', (data) => {
-  const { options } = data;
-  const initialState = JSON.parse(options || '{}');
-  ReactDOM.render(
-    <OptionsApp store={createStore(initialState)} />,
-    document.querySelector('#root')
-  );
-});
+browser.storage.local.get('options')
+  .then(data => {
+    const { options } = data;
+    const initialState = JSON.parse(options || '{}');
+    ReactDOM.render(
+      <OptionsApp store={createStore(initialState)} />,
+      document.querySelector('#root')
+    );
+  });

@@ -16,11 +16,12 @@ import createStore from '../../app/store/configureStore';
 const logger = LoggerFactory.createLogger('popup.js');
 logger.info('Popup script loaded.');
 
-browser.storage.local.get('state', (data) => {
-  const { state } = data;
-  const initialState = JSON.parse(state || '{}');
-  ReactDOM.render(
-    <PopupApp store={createStore(initialState)} />,
-    document.querySelector('#root')
-  );
-});
+browser.storage.local.get('state')
+  .then(data => {
+    const { state } = data;
+    const initialState = JSON.parse(state || '{}');
+    ReactDOM.render(
+      <PopupApp store={createStore(initialState)} />,
+      document.querySelector('#root')
+    );
+  });
