@@ -6,6 +6,7 @@
         "devDependencies": true
       }
     ],
-    "no-console": "off"
+    "no-console": "off",
+    "no-unused-vars": "off"
   }
 }

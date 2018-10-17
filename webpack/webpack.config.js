@@ -2,13 +2,15 @@
  * Webpack config entry point.
  */
 
-module.exports = (env) => {
-  console.log('Webpack env: ', env);
-  const webpackConfigPath = `./webpack.config.${env.NODE_ENV}.js`;
-  console.log('Webpack file: ', webpackConfigPath);
+const path = require('path');
+const colors = require('colors');
+
+module.exports = () => {
+  console.log(colors.blue('Webpack env: '), process.env.WEBPACK_ENV);
+  const webpackConfigPath = path.resolve(__dirname, `./webpack.config.${process.env.WEBPACK_ENV}.js`);
+  console.log(colors.blue('Webpack file: '), webpackConfigPath);
   const webpackConfigFactory = require(webpackConfigPath);
-  const webpackConfig = webpackConfigFactory(env);
-  // console.log('Webpack cfg:\n', webpackConfig);
+  const webpackConfig = webpackConfigFactory.create();
   console.log();
   return webpackConfig;
 };

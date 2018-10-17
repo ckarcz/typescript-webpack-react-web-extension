@@ -1,39 +1,46 @@
 /**
- * Base webpack config common to all build types.
+ * WEBPACK_ENV=development webpack config.
  */
 
-const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 
-const baseConfigFactory = require('./webpack.config.base.js');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const devConfigFactory = (env) => {
+const baseWebpackConfig = require('./webpack.config.base.js');
 
-  const projectDir = process.cwd();
-  const outputDir = path.resolve(projectDir, env.OUTPUT_PATH);
+const createDevConfig = () => {
+  const baseConfig = baseWebpackConfig.create();
 
-  env.DEV_SRV = (env.DEV_SRV === 'true') || false;
-  env.DEV_SRV_HTTPS = (env.DEV_SRV_HTTPS === 'true') || true;
-  env.DEV_SRV_HOST = env.DEV_SRV_HOST || 'localhost';
-  env.DEV_SRV_PORT = env.DEV_SRV_PORT || 3000;
-  env.DEV_SRV_URL = env.DEV_SRV_URL || `${env.DEV_SRV_HTTPS ? 'https' : 'http'}://${env.DEV_SRV_HOST}:${env.DEV_SRV_PORT}`;
+  const DEV_SRV = process.env.DEV_SRV || false;
+  const DEV_SRV_HTTPS = process.env.DEV_SRV_HTTPS || true;
+  const DEV_SRV_HOST = process.env.DEV_SRV_HOST ? JSON.stringify(process.env.DEV_SRV_HOST) : '127.0.0.1';
+  const DEV_SRV_PORT = process.env.DEV_SRV_PORT || 3000;
+  const DEV_SRV_URL = `${DEV_SRV_HTTPS ? 'https' : 'http'}://${DEV_SRV_HOST}:${DEV_SRV_PORT}`;
 
-  return {
+  const envConfig = {
     output: {
       hotUpdateChunkFilename: '.hot/hot-update.js',
       hotUpdateMainFilename: '.hot/hot-update.json'
     },
     plugins: [
+      new webpack.HotModuleReplacementPlugin(),
       new webpack.DefinePlugin({
         'process.env': {
-          'NODE_ENV': `'${env.NODE_ENV}'`
+          DEV_SRV: DEV_SRV,
+          DEV_SRV_URL: JSON.stringify(DEV_SRV_URL)
         }
-      }),
-      new webpack.HotModuleReplacementPlugin()
+      })
     ],
     module: {
       rules: [
+        {
+          test: /\.js$/,
+          exclude: [
+            /node_modules/
+          ],
+          loader: 'babel-loader'
+        },
         {
           test: /\.pug/,
           use: [
@@ -45,32 +52,47 @@ const devConfigFactory = (env) => {
               query: {
                 pretty: true,
                 data: {
-                  DEV_SRV: env.DEV_SRV,
-                  DEV_SRV_URL: env.DEV_SRV_URL
+                  NODE_ENV: process.env.NODE_ENV,
+                  DEV_SRV: DEV_SRV,
+                  DEV_SRV_URL: DEV_SRV_URL
                 }
               }
             }
           ]
+        },
+        {
+          test: /\.css$/,
+          exclude: /node_modules/,
+          use: [
+            {
+              loader: MiniCssExtractPlugin.loader
+            },
+            'css-loader'
+          ]
         }
       ]
     },
+    devtool: 'source-map',
     devServer: {
-      https: env.DEV_SRV_HTTPS,
-      host: env.DEV_SRV_HOST,
-      port: env.DEV_SRV_PORT,
-      contentBase: outputDir,
+      https: DEV_SRV_HTTPS,
+      host: DEV_SRV_HOST,
+      port: DEV_SRV_PORT,
+      contentBase: baseWebpackConfig.projectOutputDir,
       publicPath: '/',
       hot: true,
       hotOnly: true,
       compress: false,
-      disableHostCheck: true
-    },
+      disableHostCheck: true,
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      }
+    }
   };
+
+  const mergedConfig = merge(baseConfig, envConfig);
+  return mergedConfig;
 };
 
-module.exports = (env) => {
-  const baseConfig = baseConfigFactory(env);
-  const devConfig = devConfigFactory(env);
-  const mergedConfig = merge(baseConfig, devConfig);
-  return mergedConfig;
+module.exports = {
+  create: createDevConfig
 };

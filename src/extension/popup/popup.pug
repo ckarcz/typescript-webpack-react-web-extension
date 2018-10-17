@@ -1,4 +1,4 @@
-//- Extension popup view
+//- Extension popup view.
 //- https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/user_interface/Popups
 //- https://developer.chrome.com/extensions/browserAction
 
@@ -7,7 +7,7 @@ doctype html
 html
   head
     meta(charset='UTF-8')
-    title Extension Popup
+    link(rel='stylesheet', href=(DEV_SRV ? `${DEV_SRV_URL}/css/popup.css` : '../css/popup.css'))
   body
     #root
     script(src=(DEV_SRV ? `${DEV_SRV_URL}/js/popup.bundle.js` : '../js/popup.bundle.js'))

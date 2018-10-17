@@ -4,8 +4,22 @@
  * https://developer.chrome.com/extensions/options
  */
 
-const logger = require('../../common/util/loggerFactory').createLogger('options.js');
+require('./options.css');
 
+import LoggerFactory from '../../util/loggerFactory';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import OptionsApp from '../../app/containers/OptionsApp';
+import createStore from '../../app/store/configureStore';
+
+const logger = LoggerFactory.createLogger('options.js');
 logger.info('Options script loaded.');
 
-// here we can render a react component in #root etc..
+browser.storage.local.get('options', (data) => {
+  const { options } = data;
+  const initialState = JSON.parse(options || '{}');
+  ReactDOM.render(
+    <OptionsApp store={createStore(initialState)} />,
+    document.querySelector('#root')
+  );
+});

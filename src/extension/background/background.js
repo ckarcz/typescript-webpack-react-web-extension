@@ -4,10 +4,10 @@
  * https://developer.chrome.com/extensions/background_pages
  */
 
-const logger = require('../../common/util/loggerFactory').createLogger('background.js');
-const browser = require('webextension-polyfill');
+import LoggerFactory from '../../util/LoggerFactory';
 
+const logger = LoggerFactory.createLogger('background.js');
 logger.info('Background script loaded.');
 
 browser.runtime.getPlatformInfo()
-  .then(info => console.log('Platform info: ', info));
+  .then(info => logger.info('Platform info: ', info));

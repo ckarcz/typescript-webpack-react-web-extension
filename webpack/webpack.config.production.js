@@ -1,15 +1,26 @@
 /**
- * Base webpack config common to all build types.
+ * WEBPACK_ENV=production webpack config.
  */
 
 const merge = require('webpack-merge');
 
-const baseConfigFactory = require('./webpack.config.base');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const prodConfigFactory = () => {
-  return {
+const baseWebpackConfig = require('./webpack.config.base');
+
+const createProdConfig = () => {
+  const baseConfig = baseWebpackConfig.create();
+
+  const envConfig = {
     module: {
       rules: [
+        {
+          test: /\.js$/,
+          exclude: [
+            /node_modules/
+          ],
+          loader: 'babel-loader'
+        },
         {
           test: /\.pug/,
           use: [
@@ -23,15 +34,28 @@ const prodConfigFactory = () => {
               }
             }
           ]
+        },
+        {
+          test: /\.css$/,
+          exclude: /node_modules/,
+          use: [
+            {
+              loader: MiniCssExtractPlugin.loader,
+              options: {
+                minimize: true
+              }
+            },
+            'css-loader'
+          ]
         }
       ]
-    },
+    }
   };
+
+  const mergedConfig = merge(baseConfig, envConfig);
+  return mergedConfig;
 };
 
-module.exports = (env) => {
-  const baseConfig = baseConfigFactory(env);
-  const prodConfig = prodConfigFactory(env);
-  const mergedConfig = merge(baseConfig, prodConfig);
-  return mergedConfig;
+module.exports = {
+  create: createProdConfig
 };

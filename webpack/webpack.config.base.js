@@ -1,88 +1,85 @@
 /**
- * Base webpack config common to all build types.
+ * Base/Common webpack config.
  */
 
 const path = require('path');
 const webpack = require('webpack');
+
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const WriteFilePlugin = require('write-file-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const baseConfigFactory = (env) => {
+const projectRootDir = path.join(__dirname, '..');
+const projectOutputDir = path.resolve(projectRootDir, 'dist', process.env.WEBPACK_OUTPUTDIR || process.env.WEBPACK_ENV);
 
-  const projectDir = process.cwd();
-  const outputDir = path.resolve(projectDir, env.OUTPUT_PATH);
+const nodeProjectRootDir = projectRootDir;
+const webpackContextDir = nodeProjectRootDir;
 
+const customPublicPath = path.join(__dirname, 'webpack.publicPath.js');
+
+const createBaseConfig = () => {
   return {
+    context: webpackContextDir,
     entry: {
-      background: [path.join(projectDir, 'src/extension/background/background.js')],
-      popup: [path.join(projectDir, 'src/extension/popup/popup.js')],
-      options: [path.join(projectDir, 'src/extension/options/options.js')]
+      background: [customPublicPath, path.join(projectRootDir, 'src/extension/background/background.js')],
+      popup: [customPublicPath, path.join(projectRootDir, 'src/extension/popup/popup.js')],
+      options: [customPublicPath, path.join(projectRootDir, 'src/extension/options/options.js')],
+    },
+    resolve: {
+      extensions: ['.js', '.jsx'],
     },
     output: {
-      path: outputDir,
+      path: projectOutputDir,
       filename: 'js/[name].bundle.js',
     },
     plugins: [
-      new CleanWebpackPlugin([outputDir], {
-        root: process.cwd(),
+      new webpack.NoEmitOnErrorsPlugin(),
+      new webpack.ProvidePlugin({
+        $: 'jquery',
+      }),
+      new WriteFilePlugin(),
+      new CleanWebpackPlugin([projectOutputDir], {
+        root: projectRootDir,
         verbose: true,
         beforeEmit: true
       }),
-      new webpack.DefinePlugin({
-        'process.env': {
-          'NODE_ENV': `'${env.NODE_ENV}'`
-        }
-      }),
-      new WriteFilePlugin(),
       new HtmlWebpackPlugin({
-        template: path.join(projectDir, 'src/extension/background/background.pug'),
+        template: path.join(projectRootDir, 'src/extension/background/background.pug'),
         filename: 'html/background.html',
         chunks: ['background'],
         inject: false,
       }),
       new HtmlWebpackPlugin({
-        template: path.join(projectDir, 'src/extension/popup/popup.pug'),
+        template: path.join(projectRootDir, 'src/extension/popup/popup.pug'),
         filename: 'html/popup.html',
         chunks: ['popup'],
         inject: false,
       }),
       new HtmlWebpackPlugin({
-        template: path.join(projectDir, 'src/extension/options/options.pug'),
+        template: path.join(projectRootDir, 'src/extension/options/options.pug'),
         filename: 'html/options.html',
         chunks: ['options'],
         inject: false,
       }),
+      new MiniCssExtractPlugin({
+        filename: 'css/[name].css'
+      }),
       new CopyWebpackPlugin([{
-        from: path.join(projectDir, `src/extension/manifest.${env.NODE_ENV}.json`),
+        from: path.join(projectRootDir, `src/extension/manifest.${process.env.WEBPACK_ENV}.json`),
         to: 'manifest.json'
       }]),
       new CopyWebpackPlugin([{
-        from: path.join(projectDir, 'src/assets'),
+        from: path.join(projectRootDir, 'src/assets'),
         to: 'assets'
-      }])
-    ],
-    module: {
-      rules: [
-        {
-          test: /\.js$/,
-          exclude: /node_modules/,
-          loader: 'babel-loader',
-          query: {
-            presets: ['env']
-          }
-        }
-      ]
-    },
-    resolve: {
-      extensions: ['.js', '.jsx'],
-      modules: [
-        path.join(projectDir, 'src'),
-        'node_modules',
-      ],
-    }
+      }]),
+    ]
   };
 };
 
-module.exports = baseConfigFactory;
+module.exports = {
+  projectRootDir: projectRootDir,
+  projectOutputDir: projectOutputDir,
+  create: createBaseConfig
+};
