@@ -4,8 +4,8 @@
  * https://developer.chrome.com/extensions/background_pages
  */
 
-import LoggerFactory from '../../util/LoggerFactory';
 const browser = require('webextension-polyfill');
+import LoggerFactory from '../../util/LoggerFactory';
 
 const logger = LoggerFactory.createLogger('background.js');
 logger.info('Background script loaded.');

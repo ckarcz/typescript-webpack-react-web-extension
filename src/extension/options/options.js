@@ -6,7 +6,8 @@
 
 require('./options.css');
 
-import LoggerFactory from '../../util/loggerFactory';
+const browser = require('webextension-polyfill');
+import LoggerFactory from '../../util/LoggerFactory';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import OptionsApp from '../../app/containers/OptionsApp';

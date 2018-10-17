@@ -13,8 +13,10 @@ function getCallerLocation() {
   var err = getErrorObject();
   var lines = err.stack.split('\n').filter(line => line.indexOf('.js:') >= 0);
   var caller_line = lines[4];
-  var index = caller_line.indexOf('(');
-  var clean = caller_line.slice(index + 1, caller_line.length - 1);
+  var lastSpaceIndex = caller_line.lastIndexOf(' ');
+  var clean = caller_line.slice(lastSpaceIndex + 1, caller_line.length);
+  clean = clean.replace(/^\s*\(/, ''); // remove parentheses
+  clean = clean.replace(/\)\s*$/, ''); // remove parentheses
   return clean;
 }
 
