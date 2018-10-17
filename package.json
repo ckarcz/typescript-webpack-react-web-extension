@@ -9,10 +9,11 @@
   ],
   "scripts": {
     "start:dev": "npm run clean:dev && webpack-dev-server --config ./webpack/webpack.config.js --colors --env.NODE_ENV=development --env.OUTPUT_PATH=./dist/dev --env.DEV_SRV=true",
-    "build:all": "npm run build:dev && npm run build:prod",
+    "watch:dev": "npm run build:dev -- --watch",
+    "watch:prod": "npm run build:prod -- --watch",
     "build:dev": "webpack --config ./webpack/webpack.config.js --colors --env.NODE_ENV=development --env.OUTPUT_PATH=./dist/dev",
     "build:prod": "webpack --config ./webpack/webpack.config.js --colors --optimize-minimize --env.NODE_ENV=production --env.OUTPUT_PATH=./dist/prod",
-    "clean:all": "rimraf ./dist",
+    "clean": "rimraf ./dist",
     "clean:dev": "rimraf ./dist/dev",
     "clean:prod": "rimraf ./dist/prod",
     "lint": "eslint src webpack --color",
