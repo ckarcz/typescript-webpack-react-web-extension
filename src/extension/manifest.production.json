@@ -1,10 +1,10 @@
 {
   "manifest_version": 2,
   "version": "1.0.0",
-  "name": "browser-extension",
+  "name": "Typescript React Web Extension",
   "description": "Browser extension",
   "browser_action": {
-    "default_title": "Extension",
+    "default_title": "Typescript React Web Extension",
     "default_popup": "html/popup.html"
   },
   "background": {
